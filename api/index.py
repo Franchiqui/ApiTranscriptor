@@ -1,6 +1,8 @@
 import os
 import sys
 
+print("Starting api/index.py")
+
 # Asegura que el directorio padre de 'api' esté en el PYTHONPATH.
 # Esto permite importar 'app' como un módulo de nivel superior.
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -8,11 +10,16 @@ parent_dir = os.path.dirname(current_dir)
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
+print("sys.path updated")
+
 # Ahora, intenta importar desde 'app.main'
 try:
+    print("Importing app.main")
     from app.main import app as fastapi_app
+    print("App imported successfully")
     # Exponemos la aplicación FastAPI con el nombre estándar 'app' para ASGI
     app = fastapi_app
+    print("App set")
     # Eliminamos 'handler = fastapi_app' para evitar conflictos con la detección de Vercel
 except ImportError as e:
     # Imprime el error de importación para depuración en los logs de Vercel
