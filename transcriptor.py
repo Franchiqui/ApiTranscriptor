@@ -1,29 +1,23 @@
-from io import BytesIO
-import librosa
-import numpy as np
-from scipy.io import wavfile
+from pydub import AudioSegment
+import io
 import speech_recognition as sr
 
 def transcribir_archivo_audio(contents: bytes):
     try:
-        # Cargar audio con librosa
-        audio_data, samplerate = librosa.load(BytesIO(contents), sr=None)
+        # Cargar audio con pydub
+        audio = AudioSegment.from_file(io.BytesIO(contents))
         
         # Convertir a mono si es estéreo
-        if len(audio_data.shape) > 1:
-            audio_data = librosa.to_mono(audio_data)
+        if audio.channels > 1:
+            audio = audio.set_channels(1)
         
         # Resamplear a 16kHz si es necesario
-        if samplerate != 16000:
-            audio_data = librosa.resample(audio_data, orig_sr=samplerate, target_sr=16000)
-            samplerate = 16000
+        if audio.frame_rate != 16000:
+            audio = audio.set_frame_rate(16000)
         
-        # Convertir a formato de 16-bit para WAV
-        audio_int16 = (audio_data * 32767).astype(np.int16)
-        
-        # Crear archivo WAV en memoria
-        wav_buffer = BytesIO()
-        wavfile.write(wav_buffer, samplerate, audio_int16)
+        # Exportar a WAV en memoria
+        wav_buffer = io.BytesIO()
+        audio.export(wav_buffer, format="wav")
         wav_buffer.seek(0)
         
         # Transcribir con speech_recognition
