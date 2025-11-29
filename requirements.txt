@@ -3,4 +3,4 @@ uvicorn[standard]==0.24.0
 python-multipart==0.0.6
 SpeechRecognition==3.10.0
 pydub==0.25.1
-setuptools==68.0.0
+setuptools==70.0.0
