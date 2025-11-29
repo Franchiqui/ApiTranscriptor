@@ -29,4 +29,8 @@ def transcribir_archivo_audio(contents: bytes):
         return {"transcription": text}
     
     except Exception as e:
-        return {"error": f"Error en transcripción: {str(e)}"}
+        error_str = str(e)
+        if "ffprobe" in error_str or "ffmpeg" in error_str:
+            return {"error": "Archivo no soportado. Convierte el audio a formato WAV antes de subir."}
+        else:
+            return {"error": f"Error en transcripción: {error_str}"}
